@@ -23,20 +23,28 @@ public class ClientSocket extends Thread {
     public void run() {
         while (true) {
             try {
-                String[] request = in.readLine().split(";");
-                switch (Integer.parseInt(request[0])){
+                String s=in.readLine();
+                String[] request = s.split(";");
+                switch (Integer.parseInt(request[0])) {
                     case 100:
-                        out.write(mydb.verification(100,request[1],request[2]));
+                        out.write(mydb.verification(100, request[1], request[2]));
                         out.flush();
                         break;
                     case 200:
-                        out.write(mydb.addingUser(200, request[1],request[2],request[3],request[4],request[5]));
+                        out.write(mydb.addingUser(200, request[1], request[2], request[3], request[4], request[5]));
                         out.flush();
                         break;
                     case 300:
                         //300;firstDate;secondDate;currency
-                        out.write(mydb.getData(request[1],request[2],request[3]));
+                        out.write(mydb.getData(request[1], request[2], request[3]));
                         out.flush();
+                        break;
+                    case 400:
+                        mydb.saveLog(request[2].replace("-", ""), request[3], request[1]);
+                        break;
+                    case 500:
+                        out.write(mydb.requestLog(request[1], request[2]));
+                        out.flush();;
                         break;
                 }
             } catch (IOException e) {

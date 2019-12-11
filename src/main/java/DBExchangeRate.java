@@ -1,3 +1,4 @@
+import java.io.BufferedWriter;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -161,5 +162,40 @@ public class DBExchangeRate {
             e.printStackTrace();
         }
         return out.toString();
+    }
+
+    public void saveLog(String s1, String s2, String s3) {
+        PreparedStatement prepared = null;
+        try {
+            prepared = connection.prepareStatement("insert into UsersLog (date, UsersLog, Users_idUsers) value (?,?,?)");
+            prepared.setString(1, s1);
+            prepared.setString(2, s2);
+            prepared.setString(3, s3);
+            prepared.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String requestLog(String id, String log){
+        StringBuilder sb=new StringBuilder();
+        try {
+            PreparedStatement prepared = connection.prepareStatement("select UsersLog from UsersLog where Users_idUsers=?");
+            prepared.setInt(1, Integer.parseInt(id));
+            prepared.execute();
+
+
+            ResultSet resultSet=prepared.getResultSet();
+            sb.append(500);
+            while (resultSet.next()){
+                sb.append("|||");
+                sb.append((resultSet.getString("UsersLog")));
+            }
+            sb.append("\n");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return sb.toString();
     }
 }
